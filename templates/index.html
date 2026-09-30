@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DuplicateIQ — AI-Powered Duplicate Question Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="14" cy="14" r="7" stroke="currentColor" stroke-width="1.6" opacity="0.55"/>
+        </svg>
+      </span>
+      DuplicateIQ
+    </div>
+    <nav class="main-nav">
+      <a href="#home">Home</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section id="home" class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="badge">Machine Learning Based Detection</span>
+        <h1>Are these questions<br>really the same?</h1>
+        <p class="hero-desc">Compare two questions and find out whether they have the same meaning, using a TF-IDF and Logistic Regression model trained on the Quora Question Pairs dataset.</p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="bubble bubble-a">How do I learn Python?</div>
+        <div class="bubble bubble-b">Best way to learn Python?</div>
+        <div class="overlap-ring"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="container">
+      <div class="card compare-card">
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="question1">Question 1</label>
+            <textarea id="question1" rows="3" placeholder="Enter your first question..."></textarea>
+          </div>
+          <div class="field">
+            <label for="question2">Question 2</label>
+            <textarea id="question2" rows="3" placeholder="Enter your second question..."></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="compareBtn" class="btn btn-primary">
+            <span class="btn-label">Compare Questions</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <button id="clearBtn" class="btn btn-ghost">Clear</button>
+        </div>
+
+        <p id="errorMsg" class="error-msg" hidden></p>
+
+        <div id="resultSection" class="result-section" hidden>
+          <div class="result-top">
+            <span class="result-tag" id="resultTag">DUPLICATE</span>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              <span>Confidence</span>
+              <span id="confidenceValue">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="confidenceBar"></div>
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-label">
+              <span>Similarity Score</span>
+              <span id="similarityValue">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill progress-fill-secondary" id="similarityBar"></div>
+            </div>
+          </div>
+
+          <p class="result-explanation" id="resultExplanation"></p>
+        </div>
+
+      </div>
+
+      <div class="examples">
+        <span class="examples-label">Try an example</span>
+        <div class="example-chips">
+          <button class="example-chip" data-q1="How can I learn Python?" data-q2="What is the best way to learn Python?">
+            Learning Python
+          </button>
+          <button class="example-chip" data-q1="What is the capital of India?" data-q2="Which city is the capital of India?">
+            Capital of India
+          </button>
+          <button class="example-chip" data-q1="How do I make pizza?" data-q2="What is machine learning?">
+            Unrelated topics
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="how-section">
+    <div class="container">
+      <h2>How it works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-number">01</span>
+          <h3>Data Preprocessing</h3>
+          <p>Clean and normalize the questions — lowercasing, removing punctuation and extra whitespace.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-number">02</span>
+          <h3>Feature Extraction</h3>
+          <p>Convert text into numerical features using TF-IDF, then compute cosine similarity, word overlap and length difference.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-number">03</span>
+          <h3>Prediction</h3>
+          <p>A Logistic Regression model, trained on these features, predicts whether the questions are duplicates.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about-section">
+    <div class="container about-grid">
+      <div>
+        <h2>About this project</h2>
+        <p><strong>Problem statement.</strong> Platforms like Quora receive many questions that ask the same thing in different words. Automatically detecting duplicate questions helps route users to existing answers instead of creating redundant threads.</p>
+        <p><strong>Dataset.</strong> The model is trained on the Quora Question Pairs dataset, which contains pairs of questions along with a label indicating whether they are duplicates.</p>
+      </div>
+      <div>
+        <p><strong>TF-IDF.</strong> Term Frequency–Inverse Document Frequency turns each question into a vector that reflects how important each word is, relative to the whole dataset.</p>
+        <p><strong>Logistic Regression.</strong> A simple, interpretable classifier trained on similarity-based features (cosine similarity, word overlap, length difference) to output a duplicate / not-duplicate decision.</p>
+        <p><strong>Evaluation metrics.</strong> Accuracy, Precision, Recall, F1 Score and a Confusion Matrix are used to measure how well the model performs on unseen test data.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    DuplicateIQ — Duplicate Question Pairs Detection
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

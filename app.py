@@ -34,8 +34,7 @@ app = Flask(__name__)
     # ============================================================
 # MODEL PATHS
 # ============================================================
-
-     BASE_DIR = os.path.dirname(
+BASE_DIR = os.path.dirname(
     os.path.abspath(__file__)
 )
 

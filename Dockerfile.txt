@@ -1,0 +1,41 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    NLTK_DATA=/usr/local/share/nltk_data \
+    HOME=/root
+
+WORKDIR /app
+
+# Required for downloading and installing Python dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install dependencies with compatible scientific Python versions
+COPY requirements.txt .
+
+RUN printf '%s\n' \
+    'numpy<2' \
+    'scipy<1.13' \
+    > /tmp/constraints.txt \
+    && pip install --upgrade pip \
+    && pip install -c /tmp/constraints.txt -r requirements.txt \
+    && python -m nltk.downloader \
+       -d /usr/local/share/nltk_data \
+       stopwords wordnet omw-1.4
+
+# Copy application source, templates, and static assets
+COPY . .
+
+# Persist model files and GloVe cache
+RUN mkdir -p /app/model /root/gensim-data \
+    && chmod -R a+rX /app
+
+EXPOSE 5000
+
+# Train once if the saved model artifacts do not exist,
+# then start Flask on all interfaces.
+CMD ["sh", "-c", "if [ ! -f model/model.pkl ] || [ ! -f model/vectorizer.pkl ]; then python train_model.py || exit 1; fi; exec flask --app app run --host=0.0.0.0 --port=5000"]

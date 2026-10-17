@@ -1,0 +1,7 @@
+services:
+  ml-project:
+    build: .
+    container_name: ml-project-app
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
